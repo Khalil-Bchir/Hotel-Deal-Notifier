@@ -1,7 +1,7 @@
 'use client';
 
 import Footer from '@/components/layout/footer';
-import Navbar from '@/components/layout/navbar';
+// import Navbar from '@/components/layout/navbar';
 import * as components from '@/components/pages/home/components';
 import * as modules from '@/components/pages/home/modules';
 import { allHotels } from '@/lib/data';
@@ -82,7 +82,6 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
       {/* Navbar */}
-      <Navbar />
 
       <main className="flex-1">
         {/* Hero Section */}
