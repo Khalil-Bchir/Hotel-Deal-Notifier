@@ -1,6 +1,5 @@
 'use client';
 
-import { SideBar } from '@/components/layout/sidebar';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -22,11 +21,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return null;
   }
 
-  return (
-    <SideBar>
-      {children}
-    </SideBar>
-  );
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;
