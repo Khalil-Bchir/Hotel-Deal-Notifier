@@ -1,6 +1,7 @@
 'use client';
 
-import * as layout from '@/components/layout';
+import Footer from '@/components/layout/footer';
+import Navbar from '@/components/layout/navbar';
 import * as components from '@/components/pages/home/components';
 import * as modules from '@/components/pages/home/modules';
 import { allHotels } from '@/lib/data';
@@ -81,7 +82,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
       {/* Navbar */}
-      <layout.Navbar />
+      <Navbar />
 
       <main className="flex-1">
         {/* Hero Section */}
@@ -119,7 +120,7 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <layout.Footer />
+      <Footer />
 
       {/* Confirmation Dialog */}
       <components.ConfirmationDialog
