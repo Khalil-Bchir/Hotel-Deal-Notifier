@@ -45,4 +45,9 @@ export const config = {
    */
   accessTokenSecret: requiredVar('ACCESS_TOKEN_SECRET'),
   accessTokenTtl: requiredVar('ACCESS_TOKEN_TTL'),
+
+  /**
+   * Third-party APIs
+   */
+  rapidApiKey: requiredVar('RAPIDAPI_KEY'),
 };

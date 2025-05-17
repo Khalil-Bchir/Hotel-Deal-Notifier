@@ -10,12 +10,14 @@ interface TopPicksSectionProps {
   topDeals: Hotel[];
   bookHotel: (hotel: Hotel) => void;
   onViewAllDeals: () => void;
+  isLoading: boolean;
 }
 
 export default function TopPicksSection({
   topDeals,
   bookHotel,
   onViewAllDeals,
+  isLoading,
 }: TopPicksSectionProps) {
   return (
     <section id="top-picks" className="w-full py-16 md:py-24">
@@ -31,11 +33,25 @@ export default function TopPicksSection({
             </p>
           </div>
         </div>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {topDeals.map((deal) => (
-            <HotelDealCard key={deal.id} hotel={deal} bookHotel={bookHotel} />
-          ))}
-        </div>
+
+        {isLoading ? (
+          <div className="flex justify-center py-12">
+            <div className="border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
+          </div>
+        ) : topDeals.length > 0 ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {topDeals.map((deal) => (
+              <HotelDealCard key={deal.id} hotel={deal} bookHotel={bookHotel} />
+            ))}
+          </div>
+        ) : (
+          <div className="py-12 text-center">
+            <p className="text-muted-foreground">
+              No deals available at the moment. Please check back later.
+            </p>
+          </div>
+        )}
+
         <div className="mt-10 flex justify-center">
           <Button variant="outline" size="lg" onClick={onViewAllDeals}>
             View All Deals <ArrowRight className="ml-2 h-4 w-4" />

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import type { Hotel } from '@/types';
 import { MapPin, Star } from 'lucide-react';
+import Link from 'next/link';
 
 interface HotelCardProps {
   hotel: Hotel;
@@ -30,7 +31,9 @@ export default function HotelCard({ hotel, bookHotel }: HotelCardProps) {
             <div>
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="text-xl font-bold">{hotel.name}</h3>
+                  <Link href={`/hotels/${hotel.id}`} className="hover:text-primary">
+                    <h3 className="text-xl font-bold">{hotel.name}</h3>
+                  </Link>
                   <div className="mt-1 flex items-center">
                     <MapPin className="mr-1 h-4 w-4 text-gray-500" />
                     <span className="text-gray-500">{hotel.location}</span>
@@ -69,7 +72,12 @@ export default function HotelCard({ hotel, bookHotel }: HotelCardProps) {
                 <span className="text-primary ml-2 text-2xl font-bold">${hotel.currentPrice}</span>
                 <span className="text-sm text-gray-500">/night</span>
               </div>
-              <Button onClick={() => bookHotel(hotel)}>Book Now</Button>
+              <div className="flex space-x-2">
+                <Link href={`/hotels/${hotel.id}`} passHref>
+                  <Button variant="outline">View Details</Button>
+                </Link>
+                <Button onClick={() => bookHotel(hotel)}>Book Now</Button>
+              </div>
             </div>
           </div>
         </div>

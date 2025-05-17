@@ -49,6 +49,7 @@ export default function SearchSection({ searchForm, onSearch, isSearching }: Sea
                                 className="h-12 pl-10"
                                 placeholder="Where do you want to go?"
                                 {...field}
+                                disabled={isSearching}
                               />
                             </div>
                           </FormControl>

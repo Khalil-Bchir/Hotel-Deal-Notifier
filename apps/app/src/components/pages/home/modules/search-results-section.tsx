@@ -74,6 +74,27 @@ export default function SearchResultsSection({
 
   const filteredHotels = filterAndSortHotels();
 
+  if (searchResults.length === 0) {
+    return (
+      <section className="w-full py-16 md:py-24">
+        <div className="container px-4 md:px-6">
+          <div className="flex flex-col items-center justify-center space-y-4 text-center">
+            <div className="max-w-3xl space-y-2">
+              <Badge variant="outline" className="mb-2">
+                Search Results
+              </Badge>
+              <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">No Hotels Found</h2>
+              <p className="text-gray-500 md:text-xl/relaxed dark:text-gray-400">
+                We couldn't find any hotels matching your search criteria. Please try a different
+                search.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="w-full py-16 md:py-24">
       <div className="container px-4 md:px-6">

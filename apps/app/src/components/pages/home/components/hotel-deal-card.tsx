@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/card';
 import type { Hotel } from '@/types';
 import { MapPin, Star } from 'lucide-react';
+import Link from 'next/link';
 
 interface HotelDealCardProps {
   hotel: Hotel;
@@ -32,7 +33,11 @@ export default function HotelDealCard({ hotel, bookHotel }: HotelDealCardProps) 
         </Badge>
       </div>
       <CardHeader className="p-4">
-        <CardTitle className="line-clamp-1 text-lg">{hotel.name}</CardTitle>
+        <CardTitle className="line-clamp-1 text-lg">
+          <Link href={`/hotels/${hotel.id}`} className="hover:text-primary">
+            {hotel.name}
+          </Link>
+        </CardTitle>
         <CardDescription className="flex items-center">
           <MapPin className="mr-1 h-4 w-4 flex-shrink-0" />
           <span className="line-clamp-1">{hotel.location}</span>
@@ -59,9 +64,16 @@ export default function HotelDealCard({ hotel, bookHotel }: HotelDealCardProps) 
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0">
-        <Button className="w-full" onClick={() => bookHotel(hotel)}>
-          View Deal
-        </Button>
+        <div className="flex w-full space-x-2">
+          <Link href={`/hotels/${hotel.id}`} className="flex-1">
+            <Button variant="outline" className="w-full">
+              View Details
+            </Button>
+          </Link>
+          <Button className="flex-1" onClick={() => bookHotel(hotel)}>
+            Book Now
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   );

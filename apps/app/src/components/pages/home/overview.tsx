@@ -3,11 +3,12 @@
 import * as layout from '@/components/layout';
 import * as components from '@/components/pages/home/components';
 import * as modules from '@/components/pages/home/modules';
-import { allHotels } from '@/lib/data';
+import { toast } from '@/components/ui/use-toast';
+import { fetchTopDeals, searchHotels, subscribeToDeals } from '@/lib/actions/hotel-actions';
 import { formSchema, searchSchema } from '@/lib/validation';
 import type { Hotel } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { z } from 'zod';
 
@@ -18,6 +19,9 @@ export default function Home() {
   const [searchResults, setSearchResults] = useState<Hotel[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const [topDeals, setTopDeals] = useState<Hotel[]>([]);
+  const [isLoadingTopDeals, setIsLoadingTopDeals] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [date, setDate] = useState<{
     from: Date;
     to: Date;
@@ -45,27 +49,80 @@ export default function Home() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    setShowConfirmation(true);
+  // Fetch top deals on component mount
+  useEffect(() => {
+    async function loadTopDeals() {
+      setIsLoadingTopDeals(true);
+      setError(null);
+      try {
+        const deals = await fetchTopDeals(4);
+        setTopDeals(deals);
+      } catch (error) {
+        console.error('Failed to fetch top deals:', error);
+        setError('Failed to load top deals. Please try again later.');
+        toast({
+          title: 'Error',
+          description: 'Failed to load top deals. Please try again later.',
+          variant: 'destructive',
+        });
+      } finally {
+        setIsLoadingTopDeals(false);
+      }
+    }
+
+    loadTopDeals();
+  }, []);
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const success = await subscribeToDeals(values.email, values.city, values.dates);
+      if (success) {
+        setShowConfirmation(true);
+        toast({
+          title: 'Success',
+          description: `You've been subscribed to price alerts for ${values.city}.`,
+        });
+      }
+    } catch (error) {
+      console.error('Error subscribing to deals:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to subscribe to deals. Please try again later.',
+        variant: 'destructive',
+      });
+    }
   }
 
-  function onSearch(values: z.infer<typeof searchSchema>) {
+  async function onSearch(values: z.infer<typeof searchSchema>) {
     setIsSearching(true);
+    setError(null);
+    try {
+      const checkIn = date.from.toISOString().split('T')[0];
+      const checkOut = date.to.toISOString().split('T')[0];
 
-    // Simulate API call with timeout
-    setTimeout(() => {
-      // Filter hotels based on destination (case insensitive partial match)
-      const filteredHotels = allHotels.filter(
-        (hotel) =>
-          hotel.location.toLowerCase().includes(values.destination.toLowerCase()) ||
-          hotel.name.toLowerCase().includes(values.destination.toLowerCase()),
-      );
+      const results = await searchHotels(values.destination, checkIn, checkOut);
 
-      setSearchResults(filteredHotels);
+      setSearchResults(results);
       setShowSearchResults(true);
+
+      if (results.length === 0) {
+        toast({
+          title: 'No results found',
+          description:
+            "We couldn't find any hotels matching your search criteria. Please try a different search.",
+        });
+      }
+    } catch (error) {
+      console.error('Error searching hotels:', error);
+      setError('Failed to search hotels. Please try again later.');
+      toast({
+        title: 'Error',
+        description: 'Failed to search hotels. Please try again later.',
+        variant: 'destructive',
+      });
+    } finally {
       setIsSearching(false);
-    }, 1500);
+    }
   }
 
   function bookHotel(hotel: Hotel) {
@@ -73,9 +130,25 @@ export default function Home() {
     setShowBookingConfirmation(true);
   }
 
-  function viewAllDeals() {
+  async function viewAllDeals() {
     searchForm.setValue('destination', '');
-    onSearch({ destination: '' });
+    setIsSearching(true);
+    setError(null);
+    try {
+      const results = await searchHotels('');
+      setSearchResults(results);
+      setShowSearchResults(true);
+    } catch (error) {
+      console.error('Error fetching all deals:', error);
+      setError('Failed to fetch all deals. Please try again later.');
+      toast({
+        title: 'Error',
+        description: 'Failed to fetch all deals. Please try again later.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSearching(false);
+    }
   }
 
   return (
@@ -97,6 +170,15 @@ export default function Home() {
           isSearching={isSearching}
         />
 
+        {/* Error Message */}
+        {error && (
+          <div className="container mx-auto px-4 py-4">
+            <div className="rounded-md bg-red-50 p-4 text-red-700">
+              <p>{error}</p>
+            </div>
+          </div>
+        )}
+
         {/* Search Results Section */}
         {showSearchResults && (
           <modules.SearchResultsSection
@@ -109,13 +191,11 @@ export default function Home() {
 
         {/* Top Picks Section */}
         <modules.TopPicksSection
-          topDeals={allHotels.slice(0, 4)}
+          topDeals={topDeals}
           bookHotel={bookHotel}
           onViewAllDeals={viewAllDeals}
+          isLoading={isLoadingTopDeals}
         />
-
-        {/* Post-Search Process Section */}
-        {/* <modules.PostSearchProcessSection /> */}
       </main>
 
       {/* Footer */}
