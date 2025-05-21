@@ -1,6 +1,8 @@
 import { ajvFilePlugin } from '@fastify/multipart';
 import { PrismaClient, User } from '@saas-monorepo/database';
 import ajvFormat from 'ajv-formats';
+import type { Channel, Connection, Options } from 'amqplib';
+import { Queue, QueueEvents } from 'bullmq';
 // Require library to exit fastify process, gracefully (if possible)
 import closeWithGrace from 'close-with-grace';
 import { FastifyInstance, FastifyServerOptions, fastify } from 'fastify';
@@ -21,6 +23,14 @@ declare module 'fastify' {
   interface FastifyInstance {
     prisma: PrismaClient;
     verifyToken: () => Promise<void>;
+    bull: {
+      alertQueue: Queue;
+    };
+    rabbit: {
+      connection: Connection;
+      channel: Channel;
+      publish: (queue: string, data: unknown, opts?: any) => boolean;
+    };
   }
   interface FastifyRequest {
     loggedUser: User;

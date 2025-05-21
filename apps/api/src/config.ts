@@ -50,4 +50,10 @@ export const config = {
    * Third-party APIs
    */
   rapidApiKey: requiredVar('RAPIDAPI_KEY'),
+  rapidApiHost: requiredVar('RAPIDAPI_HOST'),
+
+  redisHost: requiredVar('REDIS_HOST'),
+  redisPort: requiredIntVar('REDIS_PORT'),
+  redisPassword: requiredVar('REDIS_PASSWORD'),
+  redisFamily: requiredIntVar('REDIS_FAMILY'),
 };

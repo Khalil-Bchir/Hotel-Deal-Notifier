@@ -14,6 +14,21 @@ model User {
   password   String   @db.Text()
   create_at  DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt
+  Alert      Alert[]
 
   @@index([email])
+}
+
+model Alert {
+  id           String   @id @default(cuid())
+  userId       String
+  destination  String // plain search term (“New York”)
+  checkinDate  DateTime
+  checkoutDate DateTime
+  createdAt    DateTime @default(now())
+  isActive     Boolean  @default(true)
+
+  // optional: send only once per day, keep lastSend timestamp
+  lastSentAt DateTime?
+  User       User      @relation(fields: [userId], references: [id])
 }

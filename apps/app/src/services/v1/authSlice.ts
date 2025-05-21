@@ -1,19 +1,9 @@
+import { AuthState } from '@/types/v1/auth';
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { createSelector } from 'reselect';
 
 import { RootState } from '../store';
-
-interface AuthState {
-  loading: boolean;
-  error: string | null;
-  accessToken: string | null;
-  user: {
-    id: string;
-    email: string;
-    name: string;
-  } | null;
-}
 
 const isClient = typeof window !== 'undefined';
 

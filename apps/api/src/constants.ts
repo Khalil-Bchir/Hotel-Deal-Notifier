@@ -1,8 +1,1 @@
-export enum Status {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
-  PENDING = 'PENDING',
-  FAILED = 'FAILED',
-}
-
-export const azureAdminUsername = 'azureuser';
+export const MAX_UPSTREAM_PAGES = 30;

@@ -1,5 +1,6 @@
 'use client';
 
+import { SideBar } from '@/components/layout/sidebar';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -12,7 +13,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     if (typeof window !== 'undefined') {
       const token = sessionStorage.getItem('access_token');
       if (!token) {
-        router.push('/login');
+        router.push('/auth/login');
       }
     }
   }, [isAuthenticated, router]);
@@ -21,7 +22,11 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return null;
   }
 
-  return <>{children}</>;
+  return (
+    <SideBar>
+      <div className="py-4 ">{children}</div>
+    </SideBar>
+  );
 };
 
 export default ProtectedRoute;

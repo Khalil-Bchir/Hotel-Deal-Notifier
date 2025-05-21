@@ -9,7 +9,7 @@ import rootReducer from './rootReducer';
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['node'], // only persist the "node" slice
+  whitelist: [''],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
